@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Liquid Temp Cal</title>
+	<script src="jquery.js"></script>
+	<link rel="stylesheet" href="panCSS.CSS"/>
+
+</head>
+<body>
+
+	<div id="modeBtns">
+		<button class="raise">BGA/CSP</button>
+		<button class="raise">Chip Resistor</button>
+		<button class="raise">Leadframe</button><br>
+	</div>
+
+	<div id="Input" >
+		<h2>Package Dimensions</h2>
+
+		Pitch (mm): <select id="pitchMM">
+			<option>.5</option>
+			<option>.65</option>
+			<option>.8</option>
+			<option>1.0</option>
+			<option>1.27</option>
+		</select> 
+		<button id="default">Default</button> <br>
+		Pitch (mils): <input id="pitchMils" type="number"><br>
+		Ball Diameter (mils): <input id="ballDiameter" type="number" ><br>
+		<p id="Note">*Note: 1mm equals roughly 40 mils</p>
+	</div>
+
+	<div id="sDim" >
+		<h2>Stencil Dimensions</h2><br>
+		Aperture Shape: <select id="aShape">
+			<option value="square">Square</option>
+			<option value="round">Round</option>
+		</select><br>
+		Aperture Size (mils): <input type="number" id="apSize"><br>
+		Stencil Thickness (mils): <input type="number" id="sThick"><br>
+		Transfer Ratio (in %): <input type="number" id="tRatio">
+	</div>
+
+	<div id="sPaste">
+		<h2>Solder Paste</h2><br>
+		<button id="snpbag">SnPbAg</button>
+		<button id="snpb">SnPb</button>
+		<button id="snagcu">SnAgCu</button><br>
+		Sn (in %): <input type="number" id="SnPaste" class="pastesel"><br>
+		Pb (in %): <input type="number" id="PbPaste" class="pastesel"><br>
+		Ag (in %): <input type="number" id="AgPaste" class="pastesel"><br>
+		Cu (in %): <input type="number" id="CuPaste" class="pastesel"><br>
+		Metal Content in Paste (% in volume):<br>
+		<input type="number" id="metalContent">
+	</div>
+	
+	<div id="sBall">
+		<h2>Solder Ball</h2><br>
+		Sn (in %): <input type="number" id="SnBall"><br>
+		Ag (in %): <input type="number" id="AgBall"><br>
+		Cu (in %): <input type="number" id="CuBall"><br>
+	</div><br>
+
+		<button id="calculate" class="mybtn">Calculate</button>
+		<button id="clear">Clear</button>
+
+	<div id="Results">
+		<h1>Calculation Results</h1><br>
+		<p id="percMix">% of Mixed:</p><br>
+		%Pb <input type="number" id="pbOut" disabled="true"> %Ag <input type="number" id="agOut" disabled="true"><br>
+		%Sn <input id="snOut" type="number" disabled="true"> %Cu <input id="cuOut" type="number" disabled="true"><br>
+	</div>
+	<div id="results2">
+		Liquid Temperature:<br>
+		<input type="number" id="outC" disabled="true"> Celcius<br>
+		Solder Vol. (mil^3): <input type="number" id="sVol" disabled="true"><br>
+	</div><br>
+	<h3>Copyright 2020 (c) JianBiao (John) Pan</h3>
+	<script>
+		(function($) {
+			var pasteSelect;
+
+	$('#default').click(function(){
+	var index = 
+	$('#pitchMM').children("option:selected").val();
+	if ((index == .5)) {
+		$("#pitchMils").val('20');
+		$("#ballDiameter").val('10');
+		$("#apSize").val('11');
+		$("#sThick").val('5');
+		$("#tRatio").val('70');
+	} else if (index == .65) {
+		$("#pitchMils").val('25');
+		$("#ballDiameter").val('10');
+		$("#apSize").val('14');
+		$("#sThick").val('5');
+		$("#tRatio").val('80');
+	} else if(index == .8) {
+		$("#pitchMils").val('30');
+		$("#ballDiameter").val('14');
+		$("#apSize").val('15');
+		$("#sThick").val('5');
+		$("#tRatio").val('85');
+	} else if(index == 1.0){
+		$("#pitchMils").val('40');
+		$("#ballDiameter").val('22');
+		$("#apSize").val('17');
+		$("#sThick").val('5');
+		$("#tRatio").val('90');
+	} else if(index == 1.27){
+		$("#pitchMils").val('50');
+		$("#ballDiameter").val('28');
+		$("#apSize").val('21');
+		$("#sThick").val('5');
+		$("#tRatio").val('100');
+	}
+	});
+
+	$('#clear').click(function(){
+		$('#pitchMils').val('');
+		$('#ballDiameter').val('');
+		$('#apSize').val('');
+		$('#sThick').val('');
+		$('#tRatio').val('');
+		$('#metalContent').val('');
+		$('#SnPaste').val('');
+		$('#PbPaste').val('');
+		$('#AgPaste').val('');
+		$('#CuPaste').val('');
+		$('#SnBall').val('');
+		$('#AgBall').val('');
+		$('#CuBall').val('');
+		$('#pbOut').val('');
+		$('#agOut').val('');
+		$('#snOut').val('');
+		$('#cuOut').val('');
+		$('#calcTemp').val('');
+		$('#sVol').val('');
+		$('#CuPaste').prop('disabled', false);
+		$('#SnPaste').prop('disabled', false);
+		$('#PbPaste').prop('disabled', false);
+		$('#AgPaste').prop('disabled', false);
+
+	});
+
+	$('#snpbag').click(function(){
+	pasteSelect = 0;
+	$('#CuPaste').prop('disabled', true);
+	$('#SnPaste').prop('disabled', false);
+	$('#PbPaste').prop('disabled', false);
+	$('#AgPaste').prop('disabled', false);
+	$('#SnPaste').val('62');
+	$('#PbPaste').val('36');
+	$('#AgPaste').val('2');
+	$('#CuPaste').val('');
+	$('#metalContent').val('50');
+	});
+
+	$('#snpb').click(function(){
+	pasteSelect = 1;
+	$('#CuPaste').prop('disabled', true);
+	$('#AgPaste').prop('disabled', true);
+	$('#SnPaste').prop('disabled', false);
+	$('#PbPaste').prop('disabled', false);
+	$('#SnPaste').val('63');
+	$('#PbPaste').val('37');
+	$('#AgPaste').val('');
+	$('#CuPaste').val('');
+	$('#metalContent').val('50');
+	});
+
+	$('#snagcu').click(function(){
+	pasteSelect = 2;
+	$('#CuPaste').prop('disabled', false);
+	$('#AgPaste').prop('disabled', false);
+	$('#SnPaste').prop('disabled', false);
+	$('#PbPaste').prop('disabled', true);
+	$('#SnPaste').val('96.5');
+	$('#PbPaste').val('');
+	$('#AgPaste').val('3.0');
+	$('#CuPaste').val('.5');
+	$('#metalContent').val('50');
+	});
+
+	$('#calculate').click(function(){
+	var ballVolume, density, densitySnAgCu, pasteVolume, perAg, perPb, perCu, perSn, calcTemp;
+	var pitch = $('#pitchMils').val();
+	var diameter = $('#ballDiameter').val();
+	var ballSn = $('#SnBall').val();
+	var ballAg = $('#AgBall').val();
+	var ballCu = $('#CuBall').val();
+	var metalContent = $('#metalContent').val()/100;
+	var length = $('#apSize').val();
+	var thickness = $('#sThick').val();
+	var ratio = $('#tRatio').val()/100;
+	var solSn = $('#SnPaste').val();
+	if (pasteSelect == 0){ 
+			solSn = $('#SnPaste').val();
+			solAg = $('#AgPaste').val();
+			solPb = $('#PbPaste').val()/100 ;
+		}else if (pasteSelect == 2){
+			solSn = $('#SnPaste').val();
+			solAg = $('#AgPaste').val();
+			solCu = $('#CuPaste').val();
+			solPb = 0;
+		}else if(pasteSelect == 1){
+			solSn = $('#SnPaste').val();
+			solPb = $('#PbPaste').val()/100 ;
+		}
+
+	var d;
+	d = diameter / 2.00;
+	ballVolume =  d * d * d * 3.14 * 4 / 3; 
+	var bs, ba, bc;
+	bs = ballSn / 100;
+	ba = ballAg / 100;
+	bc = ballCu / 100;
+	densitySnAgCu = 1/ ((bs / 7.29) + (ba / 10.49) + (bc /8.92 ));
+	var s, a, p;
+	s = solSn / 100;
+	p = solPb;
+	if (pasteSelect == 0){
+		a = solAg /100;
+		density = 1 / ((s / 7.29) + (p / 11.34) + (a / 10.49));
+	}else {
+		density = 1 / ((s / 7.29) + (p / 11.34));
+	}
+	if ($('#aShape').prop('selectedIndex') == 0){
+		pasteVolume = length * length * thickness * ratio;
+		perPb = (solPb * pasteVolume * density * metalContent) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu) * 100;
+		if (pasteSelect == 0){
+			perCu = (ballCu * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+			perAg = (solAg * pasteVolume * density * metalContent + ballAg * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+		}else if (pasteSelect == 2){
+			perAg = (solAg * pasteVolume * density * metalContent + ballAg * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+			perCu = (solCu * pasteVolume * density * metalContent + ballCu * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+		}else{
+				perAg = (ballAg * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+				perCu = (ballCu * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+		}
+		perSn = 100 - perPb - perAg - perCu;
+
+		if (perAg > 3.5){
+			calcTemp = 232 - (1.3 * perPb) - (3.1 * perAg) - (7.9 * perCu) + 5;
+		}else {
+			calcTemp = 232 - (1.3 * perPb) - (3.1 * perAg) - (7.9 * perCu);
+		}
+
+	}else if ($('#aShape').prop('selectedIndex') == 1){
+		pasteVolume = 3.14 * Math.pow(length / 2, 2) * thickness * ratio;
+		perPb = (solPb * pasteVolume * density * metalContent) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu) *100;
+		if (pasteSelect == 0){
+			perCu = (ballCu * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+			perAg = (solAg * pasteVolume * density * metalContent + ballAg * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+		}else if (pasteSelect == 2){
+			perAg = (solAg * pasteVolume * density * metalContent + ballAg * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+			perCu = (solCu * pasteVolume * density * metalContent + ballCu * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+		}else{
+				perAg = (ballAg * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+				perCu = (ballCu * ballVolume * densitySnAgCu) / (pasteVolume * density * metalContent + ballVolume * densitySnAgCu);
+		}
+		perSn = 100 - perPb - perAg - perCu;
+
+		if (perAg > 3.5){
+			calcTemp = 232 - (1.3 * perPb) - (3.1 * perAg) - (7.9 * perCu) + 5;
+		}else {
+			calcTemp = 232 - (1.3 * perPb) - (3.1 * perAg) - (7.9 * perCu);
+		}
+	}
+
+	$('#pbOut').val(perPb.toFixed(2));
+	$('#snOut').val(perSn.toFixed(2));
+	$('#agOut').val(perAg.toFixed(2));
+	$('#cuOut').val(perCu.toFixed(2));
+	$('#outC').val(calcTemp.toFixed(2));
+	$('#sVol').val(pasteVolume.toFixed(2));
+	});
+		})(jQuery);
+	
+	</script>
+</body>
+</html>

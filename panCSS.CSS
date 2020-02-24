@@ -1,0 +1,117 @@
+html{
+	margin: 0;
+	padding: 0;
+}
+
+html *{
+	font-family: Trebuchet MS !important;
+}
+
+body {
+	background-color: #efeff5;
+	padding: 30px;
+	max-width: 300px;
+	margin: auto;
+}
+
+button {
+	font-size: 16px;
+	background-image: linear-gradient(#F7FBFB, #C8E5EA);
+	border-radius: 5px;
+}
+
+select {
+	background-image: linear-gradient(#F7FBFB, #C8E5EA);
+}
+
+input {
+	width: 65px;
+	height: 12px;
+	font-size: 12px;
+}
+
+select {
+	height: 20px;
+	width: 75px;
+	font-size: 13px;
+	background-color: #e7eff6;
+}
+
+h1 {
+	margin-bottom: 0;
+}
+
+h2 {
+	margin-bottom: 0;
+	margin-top: 20px;
+}
+
+.pastesel:disabled {
+  background: #eeeeee;
+}
+
+.raise:hover,
+.raise:focus {
+  box-shadow: 0 0.5em 0.5em -0.4em var(--hover);
+  transform: translateY(-0.25em);
+}
+
+#percMix {
+	margin-bottom: 0;
+}
+
+#Input {
+	vertical-align: top;
+	padding: 30px;
+}
+
+#sDim {
+	vertical-align: top;
+	padding: 30px;
+}
+
+#sPaste {
+	vertical-align: top;
+	padding: 30px;
+}
+
+#sBall {
+	vertical-align: top;
+	padding: 30px;
+}
+
+#Results {
+	padding: 30px;
+}
+#results2 {
+	padding: 30px;
+}
+
+#buttons {
+	position: absolute;
+	left: 175px;
+}
+
+.ouput{
+	width: 30px;
+	height: 10px;
+}
+
+#calculate {
+	width: 120px;
+	height: 40px;
+	font-size: 18px;
+}
+
+
+#clear {
+	width: 120px;
+	height: 40px;
+	font-size: 18px;
+}
+
+h3 {
+	float: right;
+	padding-right: 50px;
+	padding-bottom: 10px;
+}
